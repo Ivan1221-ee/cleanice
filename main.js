@@ -32,11 +32,19 @@ const dialog = document.querySelector('.quote-dialog');
 if (dialog) {
   const mainForm = document.querySelector('.request-form');
   const dialogForm = mainForm.cloneNode(true);
+  const serviceField = document.getElementById('quote-service');
+  dialogForm.elements.comment.before(serviceField.content.cloneNode(true));
   dialog.append(dialogForm);
   const closeButton = dialog.querySelector('.dialog-close');
   const dialogTitle = document.getElementById('quote-title');
+  const serviceSelect = dialogForm.elements.service;
   let opener;
 
+  function updateDialogTitle() {
+    dialogTitle.textContent = serviceSelect.value || 'Заказать уборку';
+  }
+
+  serviceSelect.addEventListener('change', updateDialogTitle);
   for (const link of document.querySelectorAll('[data-quote]')) {
     link.addEventListener('click', event => {
       event.preventDefault();
@@ -44,9 +52,8 @@ if (dialog) {
       dialogForm.reset();
       dialogForm.elements.phone.setCustomValidity('');
       dialogForm.querySelector('[role=status]').replaceChildren();
-      const service = link.dataset.service;
-      dialogTitle.textContent = service || 'Заказать уборку';
-      dialogForm.elements.comment.value = service ? 'Услуга: ' + service : '';
+      serviceSelect.value = link.dataset.service || '';
+      updateDialogTitle();
       dialog.showModal();
     });
   }
@@ -64,6 +71,8 @@ if (dialog) {
 
   for (const form of [mainForm, dialogForm]) {
     const phone = form.elements.phone;
+    const status = form.querySelector('[role=status]');
+    form.addEventListener('input', () => status.replaceChildren());
     phone.addEventListener('input', () => {
       const digits = phone.value.replace(/\D/g, '').replace(/^[78]/, '').slice(0, 10);
       phone.value = digits ? '+7 (' + digits.slice(0, 3)
@@ -79,14 +88,19 @@ if (dialog) {
         phone.reportValidity();
         return;
       }
-      const { name, comment } = form.elements;
-      const body = ['Имя: ' + name.value.trim(), 'Телефон: ' + phone.value, comment.value.trim()]
+      const { name, service, comment } = form.elements;
+      const body = [
+        'Имя: ' + name.value.trim(),
+        'Телефон: ' + phone.value,
+        service?.value && 'Услуга: ' + service.value,
+        comment.value.trim()
+      ]
         .filter(Boolean).join('\n');
       const email = document.createElement('a');
       email.textContent = 'Открыть письмо';
       email.href = 'mailto:CleanIce@gmail.com?subject=' + encodeURIComponent('Запрос на уборку CleanIce')
         + '&body=' + encodeURIComponent(body);
-      form.querySelector('[role=status]').replaceChildren('Запрос подготовлен. ', email, ' и отправьте его из почтового приложения.');
+      status.replaceChildren('Запрос подготовлен. ', email, ' и отправьте его из почтового приложения.');
     });
   }
 }

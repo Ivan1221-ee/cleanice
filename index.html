@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <title>CleanIce — профессиональная уборка квартир и офисов в Москве</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="main.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=2">
+  <script src="main.js?v=2" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -147,6 +147,17 @@
     </div>
   </section>
 </main>
+<template id="quote-service">
+        <select name="service" aria-label="Услуга">
+          <option value="">Выберите услугу</option>
+          <option value="Уборка квартир">Уборка квартир</option>
+          <option value="Уборка офисов">Уборка офисов</option>
+          <option value="Уборка после ремонта">Уборка после ремонта</option>
+          <option value="Мытье окон">Мытье окон</option>
+          <option value="Химчистка ковров и мягкой мебели">Химчистка ковров и мягкой мебели</option>
+          <option value="Профессиональная уборка на мероприятиях">Профессиональная уборка на мероприятиях</option>
+        </select>
+</template>
 <dialog class="quote-dialog" aria-labelledby="quote-title">
   <button class="dialog-close" type="button" aria-label="Закрыть">×</button>
   <h2 id="quote-title">Заказать уборку</h2>
